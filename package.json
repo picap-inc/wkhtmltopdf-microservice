@@ -19,7 +19,7 @@
       "express": "^4.18.2",
       "express-rate-limit": "^6.7.0",
       "string-to-stream": "^3.0.1",
-      "wkhtmltox": "^1.1.5"
+      "wkhtmltox": "^1.1.6"
    },
    "devDependencies": {
       "@types/body-parser": "^1.19.2",
