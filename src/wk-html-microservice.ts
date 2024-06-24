@@ -53,7 +53,7 @@ export class WkHtmlMicroservice {
       this.expressApp.get('/', AppController.getLandingPage);
 
       this.expressApp.post('/pdf', (request: Request, response: Response) => {
-        console.log("--/pdf")
+        console.log("--/pdf1")
          response.writeHead(200, { 'Content-Type': 'application/pdf' });
          //this.wkHtmlConverter.pdf(strtostr(request.body.html), request.body.wkConfig).pipe(process.stdout);
          this.wkHtmlConverter.pdf(strtostr(request.body.html), request.body.wkConfig).pipe(response);
