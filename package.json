@@ -19,7 +19,8 @@
       "express": "^4.18.2",
       "express-rate-limit": "^6.7.0",
       "string-to-stream": "^3.0.1",
-      "wkhtmltox": "^1.1.5"
+      "wkhtmltox": "^1.1.5",
+      "rimraf": "^4.1.2",
    },
    "devDependencies": {
       "@types/body-parser": "^1.19.2",
@@ -27,7 +28,6 @@
       "@types/node": "^18.11.18",
       "prettier": "^2.8.3",
       "prettier-plugin-organize-imports": "^3.2.2",
-      "rimraf": "^4.1.2",
       "typescript": "^4.9.5"
    }
 }
