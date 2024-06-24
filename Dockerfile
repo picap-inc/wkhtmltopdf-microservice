@@ -10,6 +10,7 @@ RUN mkdir /var/www
 COPY ./ /var/www/wkhtmltopdf-microservice
 
 WORKDIR /var/www/wkhtmltopdf-microservice
+RUN npm install
 RUN npm run build
 
 ENTRYPOINT [ "/var/www/wkhtmltopdf-microservice/start-server.sh" ]
