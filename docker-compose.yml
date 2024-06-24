@@ -2,7 +2,7 @@ version: '3'
 
 networks:
    wkhtmltopdf_microservice:
-      external: true
+      external: false
 
 services:
    wkhtmltopdf:
