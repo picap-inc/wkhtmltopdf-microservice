@@ -20,7 +20,7 @@
       "express-rate-limit": "^6.7.0",
       "string-to-stream": "^3.0.1",
       "wkhtmltox": "^1.1.5",
-      "rimraf": "^4.1.2",
+      "rimraf": "^4.1.2"
    },
    "devDependencies": {
       "@types/body-parser": "^1.19.2",
