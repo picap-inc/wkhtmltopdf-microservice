@@ -1,4 +1,7 @@
 # wkhtmltopdf-microservice
+npm run-script build
+npm start
+wkhtmltopdf -T 50mm --footer-html www.google.com www.stackoverflow.com test.pdf && test.pdf
 ### Blazing fast Docker microservice for wkhtmltopdf and wkhtmltoimage
 
 [![GitHub Stars](https://img.shields.io/github/stars/umexco/wkhtmltopdf-microservice.svg)](https://github.com/umexco/wkhtmltopdf-microservice)
@@ -18,7 +21,7 @@ image: umex/wkhtmltopdf-microservice:1.2-alpine
 ## Docker service
 Quick test
 ```shell
-docker run -p 9100:9100 --name wkhtmltopdf umex/wkhtmltopdf-microservice:1.2-alpine 
+docker run -p 9100:9100 --name wkhtmltopdf umex/wkhtmltopdf-microservice:1.2-alpine
 ```
 
 If you just use it internally within your Docker network, it is not required (and not recommendable) to expose the port.
@@ -30,7 +33,7 @@ services:
       image: superman/any_backend:latest
       ports:
          - "80:80"
-      
+
    wkhtmltopdf:
       container_name: wkhtmltopdf_service
       image: umex/wkhtmltopdf-microservice:1.2-alpine
@@ -63,7 +66,7 @@ POST http://wkhtmltopdf:9100/pdf
 PDF options: https://www.mankier.com/1/wkhtmltopdf
 ```json
 # JSON POST body
-   
+
 {
     "html": "<html><body><h1 style=\"color: red;\">HI I AM HERE</h1></body></html>",
     "wkConfig": {
@@ -89,7 +92,7 @@ POST http://wkhtmltopdf:9100/img
 Image options: https://www.mankier.com/1/wkhtmltoimage
 ```json
 # JSON POST body
-   
+
 {
    "html": "<html><body><h1 style=\"color: red;\">HI I AM HERE</h1></body></html>",
    "wkConfig": {
