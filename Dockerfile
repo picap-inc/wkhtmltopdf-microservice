@@ -1,4 +1,4 @@
-FROM surnet/alpine-node-wkhtmltopdf:18.12.1-0.12.6-full
+FROM surnet/alpine-node-wkhtmltopdf:22.17.0-024b2b2-full
 
 RUN apk update
 RUN apk add bash
