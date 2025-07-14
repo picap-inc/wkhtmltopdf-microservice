@@ -151,7 +151,13 @@ export class WkHtmlMicroservice {
             USER: process.env.USER
          });
          const child = spawn('wkhtmltopdf', args, {
-            env: { ...process.env, DISPLAY: ':99' }
+            env: {
+               ...process.env,
+               DISPLAY: ':99',
+               XDG_RUNTIME_DIR: '/tmp/runtime-root',
+               QT_QPA_PLATFORM: 'linuxfb',
+               USER: 'root'
+            }
          });
          let errorOutput = '';
          child.stderr.on('data', (data) => {
@@ -210,7 +216,15 @@ export class WkHtmlMicroservice {
          args.push(htmlPath);
          args.push('-'); // output to stdout
          console.log('[wkhtmltoimage] Command:', 'wkhtmltoimage', args.join(' '));
-         const child = spawn('wkhtmltoimage', args);
+         const child = spawn('wkhtmltoimage', args, {
+            env: {
+               ...process.env,
+               DISPLAY: ':99',
+               XDG_RUNTIME_DIR: '/tmp/runtime-root',
+               QT_QPA_PLATFORM: 'linuxfb',
+               USER: 'root'
+            }
+         });
          let errorOutput = '';
          child.stderr.on('data', (data) => {
             errorOutput += data.toString();
