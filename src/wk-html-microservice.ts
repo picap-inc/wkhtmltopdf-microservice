@@ -116,6 +116,13 @@ export class WkHtmlMicroservice {
          fs.writeFileSync(htmlPath, htmlToWrite);
          let footerPath = '';
          let args: string[] = [];
+         
+         // Add headless-specific options for better compatibility
+         args.push('--no-stop-slow-scripts');
+         args.push('--javascript-delay', '1000');
+         args.push('--enable-local-file-access');
+         args.push('--quiet');
+         args.push('--disable-smart-shrinking');
          if (wkConfig && typeof wkConfig === 'object') {
             for (const [key, value] of Object.entries(wkConfig)) {
                const dashKey = toKebabCase(key);
@@ -136,7 +143,16 @@ export class WkHtmlMicroservice {
          args.push(htmlPath);
          args.push('-'); // output to stdout
          console.log('[wkhtmltopdf] Command:', 'wkhtmltopdf', args.join(' '));
-         const child = spawn('wkhtmltopdf', args);
+         console.log('[wkhtmltopdf] Environment:', {
+            DISPLAY: process.env.DISPLAY,
+            XDG_RUNTIME_DIR: process.env.XDG_RUNTIME_DIR,
+            QT_QPA_PLATFORM: process.env.QT_QPA_PLATFORM,
+            PWD: process.env.PWD,
+            USER: process.env.USER
+         });
+         const child = spawn('wkhtmltopdf', args, {
+            env: { ...process.env, DISPLAY: ':99' }
+         });
          let errorOutput = '';
          child.stderr.on('data', (data) => {
             errorOutput += data.toString();
