@@ -180,8 +180,8 @@ export class WkHtmlMicroservice {
          response.writeHead(200, { 'Content-Type': 'application/pdf' });
          child.stdout.pipe(response);
          function cleanup() {
-            try { fs.unlinkSync(htmlPath); } catch {}
-            if (footerPath) { try { fs.unlinkSync(footerPath); } catch {} }
+            // try { fs.unlinkSync(htmlPath); } catch {}
+            // if (footerPath) { try { fs.unlinkSync(footerPath); } catch {} }
          }
       });
 
