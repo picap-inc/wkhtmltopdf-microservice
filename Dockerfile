@@ -17,7 +17,7 @@ WORKDIR /var/www/wkhtmltopdf-microservice
 RUN npm install
 RUN npm run build
 
-# Use node user for better security
-USER node
+# Run as root for X11 compatibility
+# USER node
 
 ENTRYPOINT [ "/var/www/wkhtmltopdf-microservice/start-server.sh" ]
