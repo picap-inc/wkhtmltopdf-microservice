@@ -140,9 +140,13 @@ export class WkHtmlMicroservice {
             args.push('--footer-html');
             args.push(footerPath);
          }
+         // Generate unique output file path
+         const outputPath = path.join(os.tmpdir(), `output-${Date.now()}.pdf`);
          args.push(htmlPath);
-         args.push('-'); // output to stdout
+         args.push(outputPath); // output to file instead of stdout
+         
          console.log('[wkhtmltopdf] Command:', 'wkhtmltopdf', args.join(' '));
+         console.log('[wkhtmltopdf] Output file:', outputPath);
          console.log('[wkhtmltopdf] Environment:', {
             DISPLAY: process.env.DISPLAY,
             XDG_RUNTIME_DIR: process.env.XDG_RUNTIME_DIR,
@@ -150,6 +154,7 @@ export class WkHtmlMicroservice {
             PWD: process.env.PWD,
             USER: process.env.USER
          });
+         
          const child = spawn('wkhtmltopdf', args, {
             env: {
                ...process.env,
@@ -159,29 +164,65 @@ export class WkHtmlMicroservice {
                USER: 'root'
             }
          });
+         
          let errorOutput = '';
          child.stderr.on('data', (data) => {
             errorOutput += data.toString();
+            // Log stderr for debugging
+            console.log('[wkhtmltopdf] stderr:', data.toString());
          });
+         
          child.on('error', (err) => {
             console.error('[wkhtmltopdf] Failed to start process:', err);
             response.status(500).json({ error: 'Failed to start wkhtmltopdf', details: err.message });
             cleanup();
          });
-         child.on('close', (code) => {
-            cleanup();
+         
+         child.on('close', async (code) => {
             if (code !== 0) {
                console.error('[wkhtmltopdf] Process exited with code', code, 'stderr:', errorOutput);
                if (!response.headersSent) {
                   response.status(500).json({ error: 'wkhtmltopdf failed', code, stderr: errorOutput });
                }
+               cleanup();
+               return;
+            }
+            
+            // Check if output file exists and has content
+            try {
+               const stats = fs.statSync(outputPath);
+               if (stats.size === 0) {
+                  console.error('[wkhtmltopdf] Generated PDF file is empty');
+                  if (!response.headersSent) {
+                     response.status(500).json({ error: 'Generated PDF file is empty' });
+                  }
+                  cleanup();
+                  return;
+               }
+               
+               console.log('[wkhtmltopdf] PDF generated successfully, size:', stats.size, 'bytes');
+               
+               // Read the file and send it as response
+               const pdfBuffer = fs.readFileSync(outputPath);
+               response.writeHead(200, { 
+                  'Content-Type': 'application/pdf',
+                  'Content-Length': stats.size
+               });
+               response.end(pdfBuffer);
+               
+            } catch (err) {
+               console.error('[wkhtmltopdf] Error reading generated PDF:', err);
+               if (!response.headersSent) {
+                  response.status(500).json({ error: 'Error reading generated PDF', details: err instanceof Error ? err.message : String(err) });
+               }
+            } finally {
+               cleanup();
             }
          });
-         response.writeHead(200, { 'Content-Type': 'application/pdf' });
-         child.stdout.pipe(response);
          function cleanup() {
-            // try { fs.unlinkSync(htmlPath); } catch {}
-            // if (footerPath) { try { fs.unlinkSync(footerPath); } catch {} }
+            try { fs.unlinkSync(htmlPath); } catch {}
+            if (footerPath) { try { fs.unlinkSync(footerPath); } catch {} }
+            try { fs.unlinkSync(outputPath); } catch {}
          }
       });
 
